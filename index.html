@@ -133,6 +133,9 @@
   }
   html[data-theme="light"] #network-canvas{ opacity:0.35; }
   .hero-inner{position:relative; z-index:1;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:50px; align-items:center;}
+  @media (max-width:980px){ .hero-grid{grid-template-columns:1fr; gap:56px;} }
+  .hero-text{min-width:0;}
   .hero-inner .eyebrow, .hero-inner h1, .hero-inner p.lede, .hero-inner .btn-row{
     opacity:0; transform:translateY(22px); animation:heroUp .8s cubic-bezier(.16,.84,.44,1) forwards;
   }
@@ -162,6 +165,8 @@
     font-size:clamp(2.6rem, 6vw, 4.6rem); line-height:1.03; margin-bottom:22px;
   }
   .hero h1 .accent{color:var(--accent);}
+  .type-cycle{color:var(--accent); border-right:2px solid var(--accent); padding-right:3px; animation:typeCursor .9s steps(1) infinite;}
+  @keyframes typeCursor{ 50%{border-color:transparent;} }
   .hero p.lede{
     font-size:1.15rem; color:var(--text-muted); max-width:600px; margin-bottom:36px;
   }
@@ -177,17 +182,59 @@
   .btn-ghost{border-color:var(--border); color:var(--text); background:var(--bg-alt);}
   .btn-ghost:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px);}
 
+  /* ---------- Hero terminal panel ---------- */
+  .hero-visual{position:relative; display:flex; justify-content:center; align-items:center; min-height:380px;}
+  .terminal{
+    width:100%; max-width:420px; background:color-mix(in srgb, var(--bg-alt) 88%, transparent);
+    border:1px solid var(--border); border-radius:16px; overflow:hidden;
+    box-shadow:var(--shadow); backdrop-filter:blur(14px);
+    opacity:0; transform:translateY(24px) scale(.97);
+    animation:heroUp .8s cubic-bezier(.16,.84,.44,1) forwards; animation-delay:.32s;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px; padding:12px 16px;
+    background:var(--bg-alt-2); border-bottom:1px solid var(--border);
+  }
+  .terminal-dot{width:11px; height:11px; border-radius:50%;}
+  .terminal-dot.red{background:#F87171;} .terminal-dot.yellow{background:#FBBF24;} .terminal-dot.green{background:#34D399;}
+  .terminal-file{margin-left:10px; font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--text-muted);}
+  .terminal-body{
+    padding:22px 20px; font-family:'JetBrains Mono', monospace; font-size:0.86rem; line-height:1.85;
+    min-height:270px; white-space:pre-wrap; word-break:break-word;
+  }
+  .terminal-body .tk-key{color:#93C5FD;}
+  .terminal-body .tk-str{color:var(--accent-2);}
+  .terminal-body .tk-punc{color:var(--text-muted);}
+  .terminal-body .tk-kw{color:var(--accent);}
+  .terminal-body .tk-comment{color:var(--text-muted); font-style:italic;}
+  .terminal-cursor{display:inline-block; width:7px; height:15px; background:var(--accent); margin-left:2px; vertical-align:middle; animation:typeCursor .8s steps(1) infinite;}
+
+  .float-badge{
+    position:absolute; display:flex; align-items:center; gap:7px;
+    background:var(--bg-alt); border:1px solid var(--border); border-radius:999px;
+    padding:8px 14px; font-family:'JetBrains Mono', monospace; font-size:0.78rem;
+    box-shadow:var(--shadow); animation:badgeFloat 5s ease-in-out infinite; z-index:2;
+    opacity:0; animation:badgeIn .7s cubic-bezier(.16,.84,.44,1) forwards, badgeFloat 5s ease-in-out infinite 0.7s;
+  }
+  .float-badge::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--accent);}
+  .float-badge.b1{ top:-8%; left:-6%; animation-delay:.55s, 0s; }
+  .float-badge.b2{ bottom:6%; left:-10%; animation-delay:.7s, .8s; }
+  .float-badge.b3{ top:38%; right:-9%; animation-delay:.85s, 1.6s; }
+  @keyframes badgeIn{ to{opacity:1;} }
+  @keyframes badgeFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+  @media (max-width:980px){ .float-badge{display:none;} }
+
   /* ---------- Hero robot mascot ---------- */
   .hero-robot{
-    position:absolute; right:6%; top:50%; transform:translateY(-54%);
-    width:230px; z-index:1; display:none; pointer-events:none;
+    position:absolute; right:-6%; bottom:-9%;
+    width:130px; z-index:3; display:none; pointer-events:none;
     animation:robotFloat 4.5s ease-in-out infinite;
-    filter:drop-shadow(0 20px 40px rgba(0,0,0,0.45));
+    filter:drop-shadow(0 14px 26px rgba(0,0,0,0.5));
   }
-  @media (min-width:1280px){ .hero-robot{display:block;} }
+  @media (min-width:980px){ .hero-robot{display:block;} }
   @keyframes robotFloat{
-    0%,100%{ transform:translateY(-54%) rotate(-1.5deg); }
-    50%{ transform:translateY(-62%) rotate(1.5deg); }
+    0%,100%{ transform:rotate(-3deg) translateY(0); }
+    50%{ transform:rotate(3deg) translateY(-10px); }
   }
   .hero-robot .rb-antenna-dot{ animation:rbBlinkDot 1.6s ease-in-out infinite; transform-origin:center; }
   @keyframes rbBlinkDot{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
@@ -430,56 +477,64 @@
 <section class="hero" id="home">
   <canvas id="network-canvas"></canvas>
   <div class="wrap hero-inner">
-    <span class="eyebrow">available for 2026 SE internships</span>
-    <h1>Hiruni Nimeshika<br>builds <span class="accent">reliable systems</span><br>out of graphs, models &amp; code.</h1>
-    <p class="lede">Final year Software Engineering undergraduate at SLTC Research University. I work across the stack — from live dashboards to production-grade MLOps pipelines and Graph Neural Network research.</p>
-    <div class="btn-row">
-      <a href="#projects" class="btn btn-primary">View Projects</a>
-      <a href="uploads/resume.pdf" class="btn btn-ghost" id="cvBtn"><!-- add resume.pdf under /uploads and point this href at it -->Download CV</a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <span class="eyebrow">available for 2026 SE internships</span>
+        <h1>Hiruni Nimeshika<br>builds <span class="type-cycle" id="typeCycle">reliable systems</span></h1>
+        <p class="lede">Final year Software Engineering undergraduate at SLTC Research University. I work across the stack — from live dashboards to production-grade MLOps pipelines and Graph Neural Network research.</p>
+        <div class="btn-row">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="uploads/resume.pdf" class="btn btn-ghost" id="cvBtn"><!-- add resume.pdf under /uploads and point this href at it -->Download CV</a>
+          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="float-badge b1">Python</div>
+        <div class="float-badge b2">React</div>
+        <div class="float-badge b3">PyTorch</div>
+
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-file">profile.ts</span>
+          </div>
+          <div class="terminal-body" id="terminalBody"></div>
+        </div>
+
+        <svg class="hero-robot" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+          <ellipse class="rb-shadow" cx="110" cy="238" rx="55" ry="10" fill="#000"></ellipse>
+          <line x1="110" y1="18" x2="110" y2="4" stroke="var(--node)" stroke-width="3" stroke-linecap="round"></line>
+          <circle class="rb-antenna-dot" cx="110" cy="4" r="6" fill="var(--accent)"></circle>
+          <g class="rb-arm-left">
+            <rect x="58" y="118" width="14" height="46" rx="7" fill="var(--node)"></rect>
+            <circle cx="65" cy="118" r="9" fill="var(--node)"></circle>
+          </g>
+          <rect x="148" y="130" width="14" height="46" rx="7" fill="var(--node)"></rect>
+          <circle cx="155" cy="176" r="9" fill="var(--node)"></circle>
+          <rect x="88" y="210" width="14" height="30" rx="6" fill="var(--node)"></rect>
+          <rect x="118" y="210" width="14" height="30" rx="6" fill="var(--node)"></rect>
+          <rect x="82" y="236" width="26" height="10" rx="5" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
+          <rect x="112" y="236" width="26" height="10" rx="5" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
+          <rect x="60" y="118" width="100" height="90" rx="26" fill="var(--bg-alt)" stroke="var(--border)" stroke-width="2"></rect>
+          <rect x="82" y="140" width="56" height="34" rx="10" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
+          <circle cx="98" cy="157" r="5" fill="var(--accent)"></circle>
+          <circle cx="122" cy="157" r="5" fill="var(--accent-2)"></circle>
+          <rect x="90" y="184" width="40" height="6" rx="3" fill="var(--border)"></rect>
+          <rect x="52" y="24" width="116" height="88" rx="30" fill="var(--bg-alt)" stroke="var(--border)" stroke-width="2"></rect>
+          <rect x="70" y="46" width="80" height="46" rx="16" fill="var(--bg-alt-2)"></rect>
+          <ellipse class="rb-eye" cx="96" cy="69" rx="8" ry="10" fill="var(--accent)"></ellipse>
+          <ellipse class="rb-eye" cx="124" cy="69" rx="8" ry="10" fill="var(--accent)"></ellipse>
+        </svg>
+      </div>
     </div>
   </div>
   <div class="scroll-cue">
     <span>SCROLL</span>
     <div class="line"></div>
   </div>
-
-  <svg class="hero-robot" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
-    <ellipse class="rb-shadow" cx="110" cy="238" rx="55" ry="10" fill="#000"></ellipse>
-
-    <!-- antenna -->
-    <line x1="110" y1="18" x2="110" y2="4" stroke="var(--node)" stroke-width="3" stroke-linecap="round"></line>
-    <circle class="rb-antenna-dot" cx="110" cy="4" r="6" fill="var(--accent)"></circle>
-
-    <!-- left arm (waving) -->
-    <g class="rb-arm-left">
-      <rect x="58" y="118" width="14" height="46" rx="7" fill="var(--node)"></rect>
-      <circle cx="65" cy="118" r="9" fill="var(--node)"></circle>
-    </g>
-
-    <!-- right arm -->
-    <rect x="148" y="130" width="14" height="46" rx="7" fill="var(--node)"></rect>
-    <circle cx="155" cy="176" r="9" fill="var(--node)"></circle>
-
-    <!-- legs -->
-    <rect x="88" y="210" width="14" height="30" rx="6" fill="var(--node)"></rect>
-    <rect x="118" y="210" width="14" height="30" rx="6" fill="var(--node)"></rect>
-    <rect x="82" y="236" width="26" height="10" rx="5" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
-    <rect x="112" y="236" width="26" height="10" rx="5" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
-
-    <!-- body -->
-    <rect x="60" y="118" width="100" height="90" rx="26" fill="var(--bg-alt)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="82" y="140" width="56" height="34" rx="10" fill="var(--bg-alt-2)" stroke="var(--border)"></rect>
-    <circle cx="98" cy="157" r="5" fill="var(--accent)"></circle>
-    <circle cx="122" cy="157" r="5" fill="var(--accent-2)"></circle>
-    <rect x="90" y="184" width="40" height="6" rx="3" fill="var(--border)"></rect>
-
-    <!-- head -->
-    <rect x="52" y="24" width="116" height="88" rx="30" fill="var(--bg-alt)" stroke="var(--border)" stroke-width="2"></rect>
-    <rect x="70" y="46" width="80" height="46" rx="16" fill="var(--bg-alt-2)"></rect>
-    <ellipse class="rb-eye" cx="96" cy="69" rx="8" ry="10" fill="var(--accent)"></ellipse>
-    <ellipse class="rb-eye" cx="124" cy="69" rx="8" ry="10" fill="var(--accent)"></ellipse>
-  </svg>
 </section>
 
 <section id="about">
@@ -791,6 +846,61 @@
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
 
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Hero role-cycling typewriter
+  const cycleEl = document.getElementById('typeCycle');
+  const roles = ['reliable systems', 'AI/ML pipelines', 'full-stack apps', 'GNN research tools'];
+  let roleIdx = 0, charIdx = 0, deleting = false;
+  function typeRole(){
+    const current = roles[roleIdx];
+    if(!deleting){
+      charIdx++;
+      cycleEl.textContent = current.slice(0, charIdx);
+      if(charIdx === current.length){ deleting = true; setTimeout(typeRole, 1500); return; }
+    } else {
+      charIdx--;
+      cycleEl.textContent = current.slice(0, charIdx);
+      if(charIdx === 0){ deleting = false; roleIdx = (roleIdx+1) % roles.length; }
+    }
+    setTimeout(typeRole, deleting ? 35 : 65);
+  }
+  if(cycleEl) setTimeout(typeRole, 1300);
+
+  // Terminal code-typing animation
+  const terminalBody = document.getElementById('terminalBody');
+  const codeLines = [
+    '<span class="tk-kw">const</span> <span class="tk-key">developer</span> <span class="tk-punc">=</span> <span class="tk-punc">{</span>',
+    '  <span class="tk-key">name</span><span class="tk-punc">:</span> <span class="tk-str">"Hiruni Nimeshika"</span><span class="tk-punc">,</span>',
+    '  <span class="tk-key">role</span><span class="tk-punc">:</span> <span class="tk-str">"SE Undergraduate"</span><span class="tk-punc">,</span>',
+    '  <span class="tk-key">university</span><span class="tk-punc">:</span> <span class="tk-str">"SLTC Research"</span><span class="tk-punc">,</span>',
+    '  <span class="tk-key">focus</span><span class="tk-punc">:</span> <span class="tk-punc">[</span><span class="tk-str">"AI/ML"</span><span class="tk-punc">,</span> <span class="tk-str">"Full-Stack"</span><span class="tk-punc">,</span> <span class="tk-str">"MLOps"</span><span class="tk-punc">],</span>',
+    '  <span class="tk-key">openToInternship</span><span class="tk-punc">:</span> <span class="tk-kw">true</span><span class="tk-punc">,</span>',
+    '  <span class="tk-comment">// let\'s build something</span>',
+    '<span class="tk-punc">};</span>'
+  ];
+  function typeTerminal(){
+    if(!terminalBody) return;
+    let lineIdx = 0;
+    terminalBody.innerHTML = '';
+    function nextLine(){
+      if(lineIdx >= codeLines.length){
+        terminalBody.innerHTML += '<span class="terminal-cursor"></span>';
+        return;
+      }
+      const lineSpan = document.createElement('div');
+      terminalBody.appendChild(lineSpan);
+      lineSpan.innerHTML = codeLines[lineIdx];
+      lineIdx++;
+      setTimeout(nextLine, 260);
+    }
+    nextLine();
+  }
+  const terminalObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){ typeTerminal(); terminalObserver.disconnect(); }
+    });
+  }, {threshold:0.3});
+  if(terminalBody) terminalObserver.observe(terminalBody);
 
   // Scroll progress bar
   const progressBar = document.getElementById('progressBar');

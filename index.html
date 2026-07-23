@@ -348,6 +348,12 @@
   }
   .card:hover::before{opacity:1;}
   .card:hover{transform:translateY(-6px); border-color:var(--accent); box-shadow:var(--shadow);}
+  .card-thumb{
+    margin:-30px -30px 4px -30px; aspect-ratio:16/9; overflow:hidden;
+    border-radius:var(--radius) var(--radius) 0 0; background:var(--bg-alt-2); border-bottom:1px solid var(--border);
+  }
+  .card-thumb img, .card-thumb svg{width:100%; height:100%; object-fit:cover; object-position:top; display:block; transition:transform .5s cubic-bezier(.16,.84,.44,1);}
+  .card:hover .card-thumb img, .card:hover .card-thumb svg{transform:scale(1.06);}
   .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
   .card h3{font-size:1.28rem;}
   .badge{
@@ -638,6 +644,7 @@
     <div class="project-grid reveal-stagger" id="projectGrid">
 
       <div class="card" data-category="web">
+        <div class="card-thumb"><img src="assets/cryptopulse.png" alt="CryptoPulse real-time cryptocurrency dashboard screenshot" loading="lazy"></div>
         <div class="card-top">
           <h3>CryptoPulse</h3>
           <span class="badge live">Live</span>
@@ -659,6 +666,28 @@
       </div>
 
       <div class="card" data-category="ml">
+        <div class="card-thumb">
+          <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="225" fill="#0F1626"/>
+            <g stroke="#3A4A6B" stroke-width="1.4" opacity="0.85">
+              <line x1="78" y1="68" x2="158" y2="58"/><line x1="158" y1="58" x2="228" y2="98"/>
+              <line x1="228" y1="98" x2="308" y2="68"/><line x1="78" y1="68" x2="118" y2="148"/>
+              <line x1="118" y1="148" x2="228" y2="98"/><line x1="118" y1="148" x2="198" y2="172"/>
+              <line x1="198" y1="172" x2="298" y2="148"/><line x1="228" y1="98" x2="298" y2="148"/>
+            </g>
+            <g fill="#5EEAD4">
+              <circle cx="78" cy="68" r="5"/><circle cx="158" cy="58" r="4.5"/><circle cx="308" cy="68" r="4.5"/>
+              <circle cx="118" cy="148" r="5"/><circle cx="198" cy="172" r="4.5"/><circle cx="298" cy="148" r="5"/>
+            </g>
+            <circle cx="228" cy="98" r="16" fill="none" stroke="#F59E0B" stroke-width="2.5"/>
+            <circle cx="228" cy="98" r="6" fill="#F59E0B"/>
+            <g transform="translate(46,140)">
+              <path d="M20 0 L38 7 V22 C38 34 20 42 20 42 C20 42 2 34 2 22 V7 Z" fill="#131B2E" stroke="#3A4A6B" stroke-width="1.5"/>
+              <path d="M12 21 L18 27 L29 14" fill="none" stroke="#5EEAD4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <text x="352" y="200" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="#8D9AB8" letter-spacing="1">BUILDING…</text>
+          </svg>
+        </div>
         <div class="card-top">
           <h3>FinShield Guardian</h3>
           <span class="badge progress">In Progress</span>
@@ -670,6 +699,7 @@
       </div>
 
       <div class="card" data-category="ml">
+        <div class="card-thumb"><img src="assets/mlops-churn.png" alt="MLOps Churn Pipeline data pipeline visualization screenshot" loading="lazy"></div>
         <div class="card-top">
           <h3>MLOps Churn Pipeline</h3>
         </div>
@@ -680,6 +710,7 @@
       </div>
 
       <div class="card" data-category="web">
+        <div class="card-thumb"><img src="assets/student-predictor.png" alt="Student Performance Predictor web app screenshot" loading="lazy"></div>
         <div class="card-top">
           <h3>Student Performance Predictor</h3>
         </div>
